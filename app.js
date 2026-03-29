@@ -2,7 +2,7 @@ import { gotScraping } from 'got-scraping';
 import config from './lib/config.js';
 import { sendTelegram } from './lib/telegram.js';
 import { readCheckpoint, writeCheckpoint, appendOrg, appendFailed } from './lib/csv-io.js';
-import { checkIpLeak, getCurrentIp, rotateVpn } from './lib/vpn.js';
+import { checkIpLeak, rotateVpn } from './lib/vpn.js';
 
 const API_URL = 'https://www.erepublik.com/en/main/citizen-profile-json-global/';
 
