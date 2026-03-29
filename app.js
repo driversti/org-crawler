@@ -167,6 +167,11 @@ async function main() {
     await sleep(config.baseDelayMs);
   }
 
+  if (shuttingDown) {
+    await onShutdownComplete();
+    return;
+  }
+
   // Completion
   const elapsed = formatDuration(Date.now() - startTime);
   const msg = `✅ Scan complete. Range: ${config.startId}–${config.endId}. Orgs found: ${orgsFound}. Failed IDs: ${errorCount}. Duration: ${elapsed}`;
@@ -175,28 +180,31 @@ async function main() {
 }
 
 // Graceful shutdown
+let shutdownResolve;
+const shutdownPromise = new Promise((resolve) => { shutdownResolve = resolve; });
+
 function shutdown(signal) {
   if (shuttingDown) return;
   shuttingDown = true;
   console.log(`\n[shutdown] Received ${signal}. Finishing current request...`);
+  // main loop checks shuttingDown and will call shutdownResolve when done
+}
 
-  // Give current request time to finish, then write checkpoint and exit
-  setTimeout(async () => {
-    if (currentId) {
-      writeCheckpoint(currentId);
-      const msg = `🛑 Crawler stopped gracefully at ID ${currentId}`;
-      console.log(msg);
-      await sendTelegram(msg);
-    }
-    process.exit(0);
-  }, 1000);
+async function onShutdownComplete() {
+  if (currentId) {
+    writeCheckpoint(currentId);
+    const msg = `🛑 Crawler stopped gracefully at ID ${currentId}`;
+    console.log(msg);
+    await sendTelegram(msg);
+  }
+  process.exit(0);
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
 main().catch(async (err) => {
-  const msg = `💀 Fatal error: ${err.message}`;
+  const msg = `💀 Fatal error: ${err.message}. Exiting.`;
   console.error(msg);
   console.error(err.stack);
   await sendTelegram(msg);
