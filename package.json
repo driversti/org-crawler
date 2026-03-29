@@ -1,0 +1,14 @@
+{
+  "name": "org-crawler",
+  "version": "2.0.0",
+  "description": "eRepublik organization account crawler",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "got-scraping": "^4.1.2"
+  }
+}
