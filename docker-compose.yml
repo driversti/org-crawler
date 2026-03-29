@@ -36,7 +36,7 @@ services:
       - ./gluetun:/gluetun
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://ifconfig.me"]
+      test: ["CMD", "wget", "-q", "--spider", "http://www.google.com"]
       interval: 30s
       timeout: 10s
       start_period: 60s
