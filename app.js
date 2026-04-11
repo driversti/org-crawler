@@ -81,7 +81,7 @@ async function processId(citizenId, currentIp) {
           };
           await appendOrg(org);
           orgsFound++;
-          const msg = `🏢 Found org: ${org.name} (ID: ${org.id}, ${org.country})`;
+          const msg = `🏢 <a href="https://www.erepublik.com/en/citizen/profile/${org.id}">${org.name}</a> (ID: ${org.id}, ${org.country})`;
           console.log(msg);
           await sendTelegram(msg);
         }
